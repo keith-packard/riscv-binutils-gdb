@@ -1,0 +1,5 @@
+# Test files
+binutils-riscv64-unknown-elf source: source-is-missing binutils/testsuite/binutils-all/nfp/test1_nfp6000.nffw
+binutils-riscv64-unknown-elf source: source-is-missing binutils/testsuite/binutils-all/nfp/test2_nfp6000.nffw
+# upstream error, but we don't use autoreconf
+binutils-riscv64-unknown-elf source: autotools-pkg-config-macro-not-cross-compilation-safe gdb/configure.ac*

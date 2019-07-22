@@ -1,0 +1,12 @@
+#
+# The tools use hardlinks from /usr/bin to /usr/lib/riscv64-unknown-elf
+#
+binutils-riscv64-unknown-elf binary: package-contains-hardlink
+#
+# no manuals are included due to the license
+#
+binutils-riscv64-unknown-elf binary: binary-without-manpage
+#
+# So many spelling errors
+#
+binutils-riscv64-unknown-elf: spelling-error-in-binary

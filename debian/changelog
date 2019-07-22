@@ -1,0 +1,5 @@
+binutils-riscv64-unknown-elf (2.32.1-1) unstable; urgency=medium
+
+  * Initial packaging
+
+ -- Keith Packard <keithp@keithp.com>  Fri, 12 Apr 2019 15:00:55 -0700

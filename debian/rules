@@ -1,0 +1,43 @@
+#!/usr/bin/make -f
+export DH_VERBOSE=1
+
+export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+
+target=riscv64-unknown-elf
+
+buildflags=$(shell dpkg-buildflags --export=configure)
+
+configure_flags = \
+	--target=$(target) \
+	--prefix=/usr/lib \
+	--bindir=/usr/bin \
+	--libdir=/usr/lib/$(target) \
+	--infodir=/usr/share/doc/$(package)/info \
+	--htmldir=/usr/share/doc/$(package)/html \
+	--pdfdir=/usr/share/doc/$(package)/pdf \
+	--mandir=/usr/share/man \
+	--program-transform-name='s&^&$(target)-&' \
+	--disable-nls \
+	--disable-werror \
+	--with-expat=yes \
+	--disable-gdb \
+	--disable-sim \
+	--disable-libdecnumber \
+	--enable-multilib \
+	--enable-plugins \
+	--enable-interwork \
+	--with-system-zlib \
+	"--with-pkgversion=$(deb_version)" \
+	$(buildflags)
+
+%:
+	dh $@ --without-autoreconf
+
+override_dh_auto_configure:
+	dh_auto_configure -- $(configure_flags)
+
+override_dh_auto_test:
+	@echo "no testing, that's way too painful"
+
+override_dh_autoreconf:
+	echo no autoreconf

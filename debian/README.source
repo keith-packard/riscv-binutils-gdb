@@ -1,0 +1,26 @@
+There are two sets of changes from upstream:
+
+ 1) Remove the non-DFSG source files. This is recorded as a git commit
+    on the relevant -dfsg branch and should be merged to track the
+    desired upstream version. Because we cannot deliver these sources
+    in the .orig.tar.gz file, there is no trace of the removal in this
+    package.
+
+ 2) SiFive commits targeting freedom-tools which are not yet upstream
+    in riscv-binutils-gdb. These are minor fixes/improvements found on
+    a branch in the SiFive github repository:
+
+    https://github.com/sifive/riscv-binutils-gdb.git
+
+    These are all represented as series of commits on the
+    patch-queue/debian branch which is used to generate a quilt patch
+    series. The patch-queue/debian branch should be replaced each time
+    a new riscv-binutils-gdb version is released, or amended when a
+    new freedom-tools release is made.
+
+To generate an editable source version of the code, checkout the
+patch-queue/debian branch, build and test until things are working, then use
+
+    $ gbp pq export --commit
+
+to move those changes back to the debian branch and prepare for a build.
