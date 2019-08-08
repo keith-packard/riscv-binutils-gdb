@@ -1,3 +1,11 @@
+binutils-riscv64-unknown-elf (2.32.2019.08+dfsg~rc1-1) unstable; urgency=medium
+
+  * 2.32.2019.08~rc1-1
+  * freedom tools 2019-08 RC1
+  * removed non-DFSG source files
+
+ -- Keith Packard <keith.packard@sifive.com>  Tue, 13 Aug 2019 22:13:48 -0700
+
 binutils-riscv64-unknown-elf (2.32.1-1) unstable; urgency=medium
 
   * Initial packaging
