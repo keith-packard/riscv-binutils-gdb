@@ -135,10 +135,10 @@ CXXFLAGS_FOR_TARGET = `echo $(CXXFLAGS) | sed -e 's/-fsanitize=address//g' -e 's
 
 transform = s/^ld-new$$/$(installed_linker)/;@program_transform_name@
 bin_PROGRAMS = ld-new
-info_TEXINFOS = ld.texi
-ld_TEXINFOS = configdoc.texi
-noinst_TEXINFOS = ldint.texi
-man_MANS = ld.1
+#info_TEXINFOS = ld.texi
+#ld_TEXINFOS = configdoc.texi
+#noinst_TEXINFOS = ldint.texi
+#man_MANS = ld.1
 
 AM_MAKEINFOFLAGS = -I $(srcdir) -I $(BFDDIR)/doc -I ../bfd/doc \
 		   -I $(top_srcdir)/../libiberty

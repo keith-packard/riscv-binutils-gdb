@@ -17,16 +17,16 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-AUTOMAKE_OPTIONS = info-in-builddir no-texinfo.tex foreign
+AUTOMAKE_OPTIONS = foreign
 
-DOCFILES = aoutx.texi  archive.texi archures.texi \
-	bfdt.texi  cache.texi coffcode.texi \
-	core.texi elf.texi elfcode.texi  format.texi \
-	libbfd.texi bfdwin.texi bfdio.texi \
-	opncls.texi  reloc.texi  section.texi  \
-	syms.texi  targets.texi init.texi hash.texi linker.texi \
-	mmo.texi \
-	bfdver.texi
+#DOCFILES = aoutx.texi  archive.texi archures.texi \
+#	bfdt.texi  cache.texi coffcode.texi \
+#	core.texi elf.texi elfcode.texi  format.texi \
+#	libbfd.texi bfdwin.texi bfdio.texi \
+#	opncls.texi  reloc.texi  section.texi  \
+#	syms.texi  targets.texi init.texi hash.texi linker.texi \
+#	mmo.texi \
+#	bfdver.texi
 
 PROTOS = archive.p archures.p bfd.p \
 	 core.p format.p \
@@ -68,8 +68,8 @@ SRCIPROT = $(srcdir)/../cache.c $(srcdir)/../libbfd.c \
 
 TEXIDIR = $(srcdir)/../../texinfo/fsf
 
-info_TEXINFOS = bfd.texi
-bfd_TEXINFOS = $(DOCFILES) bfdsumm.texi
+#info_TEXINFOS = bfd.texi
+#bfd_TEXINFOS = $(DOCFILES) bfdsumm.texi
 
 MKDOC = chew$(EXEEXT_FOR_BUILD)
 
@@ -353,7 +353,7 @@ bfdver.texi: $(srcdir)/Makefile.in
 	  echo "@set BUGURL $(REPORT_BUGS_TEXI)" >> bfdver.texi; \
 	fi
 
-noinst_TEXINFOS = bfdint.texi
+#noinst_TEXINFOS = bfdint.texi
 
 MOSTLYCLEANFILES = $(MKDOC) *.o *.stamp
 
@@ -361,10 +361,10 @@ CLEANFILES = *.p *.ip
 
 DISTCLEANFILES = bfd.?? bfd.??? bfd.h libbfd.h libcoff.h texput.log
 
-MAINTAINERCLEANFILES = $(DOCFILES)
+#MAINTAINERCLEANFILES = $(DOCFILES)
 
 # We want install to imply install-info as per GNU standards, despite the
 # cygnus option.
 install: install-info
 
-MAINTAINERCLEANFILES += bfd.info
+#MAINTAINERCLEANFILES += bfd.info
