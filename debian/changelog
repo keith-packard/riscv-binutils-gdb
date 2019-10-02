@@ -1,3 +1,10 @@
+binutils-riscv64-unknown-elf (2.32.2019.08+dfsg-1) unstable; urgency=medium
+
+  * 2.32.2019.08
+  * freedom tools 2019-08
+
+ -- Keith Packard <keithp@keithp.com>  Tue, 01 Oct 2019 18:39:20 -0700
+
 binutils-riscv64-unknown-elf (2.32.2019.08+dfsg~rc1-1) unstable; urgency=medium
 
   * 2.32.2019.08~rc1-1
