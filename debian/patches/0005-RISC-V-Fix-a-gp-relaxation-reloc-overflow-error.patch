@@ -1,0 +1,75 @@
+From: Jim Wilson <jimw@sifive.com>
+Date: Wed, 28 Aug 2019 17:47:01 -0700
+Subject: RISC-V: Fix a gp relaxation reloc overflow error.
+
+This was broken when I changed how we compute the value for the gp register.
+It used to be computed inside the sdata section.  Now it is computed at the
+end which makes it an abs section symbol.  There is code that tries to use
+the alignment of the section that the gp value is in, but this does not work
+if it is in the abs section, as the abs section has alignment of 1 byte.
+There are people using alternative linker scripts that still define it in the
+sdata section, so the code is still useful.  Thus adding a check to disable
+this when gp is in the abs section.
+
+	bfd/
+	* elfnn-riscv.c (_bfd_riscv_relax_lui): Add check to exclude abs
+	section when setting max_alignment.  Update comment.
+	(_bfd_riscv_relax_pc): Likewise.
+---
+ bfd/ChangeLog     |  6 ++++++
+ bfd/elfnn-riscv.c | 17 ++++++++++-------
+ 2 files changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/bfd/ChangeLog b/bfd/ChangeLog
+index 97ba6c9..89fdb3e 100644
+--- a/bfd/ChangeLog
++++ b/bfd/ChangeLog
+@@ -1,3 +1,9 @@
++2019-08-28  Jim Wilson  <jimw@sifive.com>
++
++	* elfnn-riscv.c (_bfd_riscv_relax_lui): Add check to exclude abs
++	section when setting max_alignment.  Update comment.
++	(_bfd_riscv_relax_pc): Likewise.
++
+ 2019-08-15  Jim Wilson  <jimw@sifive.com>
+ 
+ 	* elfnn-riscv.c (perform_relocation) <R_RISCV_RVC_LUI>: If
+diff --git a/bfd/elfnn-riscv.c b/bfd/elfnn-riscv.c
+index d6455bb..5d27a5a 100644
+--- a/bfd/elfnn-riscv.c
++++ b/bfd/elfnn-riscv.c
+@@ -3533,12 +3533,13 @@ _bfd_riscv_relax_lui (bfd *abfd,
+ 
+   if (gp)
+     {
+-      /* If gp and the symbol are in the same output section, then
+-	 consider only that section's alignment.  */
++      /* If gp and the symbol are in the same output section, which is not the
++	 abs section, then consider only that output section's alignment.  */
+       struct bfd_link_hash_entry *h =
+ 	bfd_link_hash_lookup (link_info->hash, RISCV_GP_SYMBOL, FALSE, FALSE,
+ 			      TRUE);
+-      if (h->u.def.section->output_section == sym_sec->output_section)
++      if (h->u.def.section->output_section == sym_sec->output_section
++	  && sym_sec->output_section != bfd_abs_section_ptr)
+ 	max_alignment = (bfd_vma) 1 << sym_sec->output_section->alignment_power;
+     }
+ 
+@@ -3767,11 +3768,13 @@ _bfd_riscv_relax_pc  (bfd *abfd ATTRIBUTE_UNUSED,
+ 
+   if (gp)
+     {
+-      /* If gp and the symbol are in the same output section, then
+-	 consider only that section's alignment.  */
++      /* If gp and the symbol are in the same output section, which is not the
++	 abs section, then consider only that output section's alignment.  */
+       struct bfd_link_hash_entry *h =
+-	bfd_link_hash_lookup (link_info->hash, RISCV_GP_SYMBOL, FALSE, FALSE, TRUE);
+-      if (h->u.def.section->output_section == sym_sec->output_section)
++	bfd_link_hash_lookup (link_info->hash, RISCV_GP_SYMBOL, FALSE, FALSE,
++			      TRUE);
++      if (h->u.def.section->output_section == sym_sec->output_section
++	  && sym_sec->output_section != bfd_abs_section_ptr)
+ 	max_alignment = (bfd_vma) 1 << sym_sec->output_section->alignment_power;
+     }
+ 

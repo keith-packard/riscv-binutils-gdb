@@ -1,0 +1,70 @@
+From: Jim Wilson <jimw@sifive.com>
+Date: Fri, 30 Aug 2019 15:14:36 -0700
+Subject: RISC-V: Force linker error exit after unresolvable reloc.
+
+This was noticed while trying to test the compiler -msave-restore support.
+Putting non-pic code in a shared library gives a linker error, but doesn't
+stop the build.
+
+rohan:2030$ cat libtmp.c
+extern int sub2 (int);
+int sub (int i) { return sub2 (i + 10); }
+rohan:2031$ cat libtmp2.c
+extern int sub (int);
+int sub2 (int i) { return sub (i + 10); }
+rohan:2032$ riscv64-unknown-linux-gnu-gcc --shared -o libtmp.so libtmp.c
+rohan:2033$ riscv64-unknown-linux-gnu-gcc --shared -o libtmp2.so libtmp2.c libtmp.so
+/home/jimw/FOSS/install-riscv64/lib/gcc/riscv64-unknown-linux-gnu/8.3.0/../../../../riscv64-unknown-linux-gnu/bin/ld: /tmp/cctrsIBe.o(.text+0x18): unresolvable R_RISCV_CALL relocation against symbol `sub'
+rohan:2034$ echo $?
+0
+rohan:2035$ ls -lt libtmp2.so
+-rwxr-xr-x 1 jimw jimw 6912 Aug 30 14:32 libtmp2.so
+rohan:2036$
+
+The patch fixes this by forcing a linker error.  I now get this.
+
+ohan:2059$ sh tmp.script
+/home/jimw/FOSS/BINUTILS/X-riscv64-linux/ld/ld-new: libtmp2.o(.text+0x18): unresolvable R_RISCV_CALL relocation against symbol `sub'
+/home/jimw/FOSS/BINUTILS/X-riscv64-linux/ld/ld-new: final link failed: bad value
+rohan:2060$ echo $?
+1
+rohan:2061$ ls -lt libtmp2.so
+ls: cannot access 'libtmp2.so': No such file or directory
+
+	bfd/
+	* elfnn-riscv.c (riscv_elf_relocate_section): For unresolvable reloc
+	error, call bfd_set_error, set ret to FALSE, and goto out label.
+---
+ bfd/ChangeLog     | 5 +++++
+ bfd/elfnn-riscv.c | 5 ++++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/bfd/ChangeLog b/bfd/ChangeLog
+index 89fdb3e..f3feca0 100644
+--- a/bfd/ChangeLog
++++ b/bfd/ChangeLog
+@@ -1,3 +1,8 @@
++2019-08-30  Jim Wilson  <jimw@sifive.com>
++
++	* elfnn-riscv.c (riscv_elf_relocate_section): For unresolvable reloc
++	error, call bfd_set_error, set ret to FALSE, and goto out label.
++
+ 2019-08-28  Jim Wilson  <jimw@sifive.com>
+ 
+ 	* elfnn-riscv.c (_bfd_riscv_relax_lui): Add check to exclude abs
+diff --git a/bfd/elfnn-riscv.c b/bfd/elfnn-riscv.c
+index 5d27a5a..a8fa829 100644
+--- a/bfd/elfnn-riscv.c
++++ b/bfd/elfnn-riscv.c
+@@ -2297,7 +2297,10 @@ riscv_elf_relocate_section (bfd *output_bfd,
+ 	     (uint64_t) rel->r_offset,
+ 	     howto->name,
+ 	     h->root.root.string);
+-	  continue;
++
++	  bfd_set_error (bfd_error_bad_value);
++	  ret = FALSE;
++	  goto out;
+ 	}
+ 
+       if (r == bfd_reloc_ok)
