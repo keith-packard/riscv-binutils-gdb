@@ -5,3 +5,4 @@
 0005-RISC-V-Fix-a-gp-relaxation-reloc-overflow-error.patch
 0006-RISC-V-Force-linker-error-exit-after-unresolvable-re.patch
 0007-RISC-V-Fix-linker-problems-with-tls-copy-relocs.patch
+0008-Support-SiFive-specific-cache-control-instructions.patch
