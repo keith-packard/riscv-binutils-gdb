@@ -1,3 +1,0 @@
-cp -aR /usr/share/doc/gcc-riscv32-unknown-elf/ ${HOME}
-cd ${HOME}/gcc-riscv32-unknown-elf/examples/src
-make

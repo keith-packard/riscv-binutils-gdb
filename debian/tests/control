@@ -1,6 +1,0 @@
-Tests: build-examples
-Restrictions:
-    allow-stderr
-Depends: @,
- gcc-riscv32-unknown-elf,
- libstdc++-riscv32-unknown-elf-newlib-nano,
